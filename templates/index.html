@@ -6,99 +6,99 @@
     <title>YouTube Audio Processor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        body {
-            background-color: #f0f8ff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+        #response {
+            white-space: normal;
+            font-family: Arial, sans-serif;
         }
-        .custom-container {
-            max-width: 800px;
+        #response h1, #response h2, #response h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
-        .jumbotron {
-            padding: 2rem;
-            margin-bottom: 2rem;
-            background-color: #007bff;
-            color: white;
-            border-radius: .3rem;
+        #response p {
+            margin-bottom: 10px;
         }
-        .feature-list {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
+        #response ul, #response ol {
+            margin-bottom: 10px;
+            padding-left: 20px;
         }
-        .btn-primary {
-            background-color: #0056b3;
-            border-color: #004085;
+        #response pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
         }
-        .btn-primary:hover {
-            background-color: #003d80;
-            border-color: #002752;
-        }
-        .main-content {
-            flex: 1 0 auto;
-        }
-        .footer {
-            flex-shrink: 0;
-            background-color: #f8f9fa;
-            padding: 20px 0;
-            margin-top: 50px;
+        #response code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="main-content">
-        <div class="jumbotron text-center">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-4">
-                        <h1 class="display-4">YouTube Audio Processor</h1>
-                        <p class="lead">Extract, transcribe, and analyze YouTube content</p>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="feature-list">
-                            <h5>This tool allows you to:</h5>
-                            <ul class="list-unstyled mb-0">
-                                <li><i class="fas fa-download"></i> Download audio from YouTube</li>
-                                <li><i class="fas fa-file-alt"></i> Transcribe the audio content</li>
-                                <li><i class="fas fa-robot"></i> Ask AI questions about the content</li>
-                                <li><i class="fas fa-database"></i> Store and review all processed videos</li>
-                            </ul>
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="display-4 text-primary">YouTube Audio Processor</h1>
+                    <a href="/results" class="btn btn-outline-primary btn-lg"><i class="fas fa-list"></i> View All Results</a>
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <h5 class="card-title text-primary"><i class="fas fa-tasks"></i> Start Here to Process YouTube Videos</h5>
+                                <ul class="list-unstyled mb-3">
+                                    <li><i class="fas fa-download"></i> Enter a valid YouTube URL below:</li>
+                                </ul>
+                                <div class="mt-auto">
+                                    <input type="text" class="form-control" id="youtube_url" name="youtube_url" required>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <p class="lead mb-2">Total Processed Videos: {{ total_videos }}</p>
-                        <a href="/results" class="btn btn-light">View All Results</a>
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                                <div id="thumbnail-container" class="mt-3" style="display: none;">
+                                    <img id="video-thumbnail" src="" alt="Video Thumbnail" class="img-fluid rounded">
+                                    <p id="video-title" class="mt-2 text-center"></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="container custom-container mt-5">
-            <div class="card shadow">
-                <div class="card-body">
-                    <form id="audioForm">
-                        <div class="mb-3">
-                            <label for="youtube_url" class="form-label">YouTube URL:</label>
-                            <input type="text" class="form-control" id="youtube_url" name="youtube_url" required>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <form id="audioForm">
+                                <div class="mb-3">
+                                    <label for="text_prompt" class="form-label">Text Prompt:</label>
+                                    <textarea class="form-control" id="text_prompt" name="text_prompt" rows="3" required></textarea>
+                                </div>
+                                <!-- Hidden input for YouTube URL -->
+                                <input type="hidden" id="hidden_youtube_url" name="youtube_url">
+                            </form>
                         </div>
-                        <div id="thumbnail-container" class="mb-3" style="display: none;">
-                            <img id="video-thumbnail" src="" alt="Video Thumbnail" style="max-width: 200px;">
-                        </div>
-                        <div class="mb-3">
-                            <label for="text_prompt" class="form-label">Text Prompt:</label>
-                            <textarea class="form-control" id="text_prompt" name="text_prompt" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Process</button>
-                    </form>
-                    
-                    <!-- Add progress meter here -->
-                    <div id="progress-container" class="mt-3" style="display: none;">
-                        <div class="progress">
-                            <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex flex-column justify-content-start align-items-center">
+                    <button id="processButton" type="submit" class="btn btn-primary mb-3" form="audioForm">Process</button>
+                    <div id="progress-container" class="text-center" style="display: none;">
+                        <div class="progress-circle">
+                            <div class="progress-circle-inner">
+                                <div id="progress-percentage">0%</div>
+                            </div>
                         </div>
                         <p id="progress-status" class="mt-2"></p>
                     </div>
@@ -107,26 +107,36 @@
 
             <div id="result" class="mt-5" style="display:none;">
                 <h2 class="mb-4">Results:</h2>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="mb-0">Transcription:</h3>
+                <div class="accordion" id="resultsAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTranscription">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTranscription" aria-expanded="true" aria-controls="collapseTranscription">
+                                Transcription
+                            </button>
+                        </h2>
+                        <div id="collapseTranscription" class="accordion-collapse collapse show" aria-labelledby="headingTranscription" data-bs-parent="#resultsAccordion">
+                            <div class="accordion-body">
+                                <pre id="transcription" class="mb-0"></pre>
+                                <button class="btn btn-sm btn-secondary mt-2 copy-btn" data-clipboard-target="#transcription">
+                                    <i class="fas fa-copy"></i> Copy Full Transcription
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <pre id="transcription" class="mb-0"></pre>
-                        <button class="btn btn-sm btn-secondary mt-2 copy-btn" data-clipboard-target="#transcription">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="mb-0">Response:</h3>
-                    </div>
-                    <div class="card-body">
-                        <pre id="response" class="mb-0"></pre>
-                        <button class="btn btn-sm btn-secondary mt-2 copy-btn" data-clipboard-target="#response">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingResponse">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResponse" aria-expanded="false" aria-controls="collapseResponse">
+                                Response
+                            </button>
+                        </h2>
+                        <div id="collapseResponse" class="accordion-collapse collapse" aria-labelledby="headingResponse" data-bs-parent="#resultsAccordion">
+                            <div class="accordion-body">
+                                <div id="response" class="mb-0"></div>
+                                <button class="btn btn-sm btn-secondary mt-2 copy-btn" data-clipboard-target="#response">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,11 +145,10 @@
 
     <footer class="footer">
         <div class="container text-center">
-            <span class="text-muted">© 2023 YouTube Audio Processor. All rights reserved.</span>
+            <span class="text-muted">© 2024 YouTube Audio Processor. All rights reserved.</span>
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <script>
         $(document).ready(function() {
             new ClipboardJS('.copy-btn');
@@ -171,6 +180,7 @@
                 const youtubeUrl = $(this).val().trim();
                 const thumbnailContainer = $('#thumbnail-container');
                 const thumbnailImg = $('#video-thumbnail');
+                const videoTitle = $('#video-title');
 
                 if (youtubeUrl) {
                     $.ajax({
@@ -179,8 +189,9 @@
                         contentType: 'application/json',
                         data: JSON.stringify({youtube_url: youtubeUrl}),
                         success: function(data) {
-                            if (data.thumbnail_url) {
+                            if (data.thumbnail_url && data.title) {
                                 thumbnailImg.attr('src', data.thumbnail_url);
+                                videoTitle.text(data.title);
                                 thumbnailContainer.show();
                             } else {
                                 thumbnailContainer.hide();
@@ -197,6 +208,10 @@
 
             $('#audioForm').submit(function(e) {
                 e.preventDefault();
+                const youtubeUrl = $('#youtube_url').val();
+                $('#hidden_youtube_url').val(youtubeUrl);  // Set the hidden input value
+                const processButton = $('#processButton');
+                processButton.prop('disabled', true);
                 $.ajax({
                     url: '/process_with_progress',
                     type: 'POST',
@@ -206,10 +221,12 @@
                             updateProgress(data.task_id);
                         } else {
                             alert('An error occurred. Please try again.');
+                            processButton.prop('disabled', false);
                         }
                     },
                     error: function() {
                         alert('An error occurred. Please try again.');
+                        processButton.prop('disabled', false);
                     }
                 });
             });
@@ -217,26 +234,34 @@
             function updateProgress(taskId) {
                 const eventSource = new EventSource(`/progress/${taskId}`);
                 const progressContainer = $('#progress-container');
-                const progressBar = $('#progress-bar');
+                const progressCircle = $('.progress-circle');
+                const progressPercentage = $('#progress-percentage');
                 const progressStatus = $('#progress-status');
+                const processButton = $('#processButton');
 
                 progressContainer.show();
 
                 eventSource.onmessage = function(event) {
                     const data = JSON.parse(event.data);
-                    progressBar.css('width', `${data.progress}%`).attr('aria-valuenow', data.progress).text(`${data.progress}%`);
+                    const progress = data.progress;
+                    progressCircle.css('background', `conic-gradient(#007bff ${progress * 3.6}deg, #e9ecef 0deg)`);
+                    progressPercentage.text(`${progress}%`);
                     progressStatus.text(data.status);
 
                     if (data.status === 'complete') {
                         eventSource.close();
-                        $('#transcription').text(data.transcription);
-                        $('#response').text(data.response);
+                        const fullTranscription = data.transcription;
+                        $('#transcription').text(fullTranscription.slice(0, 100) + (fullTranscription.length > 100 ? '...' : ''));
+                        $('#transcription').attr('data-clipboard-text', fullTranscription);
+                        $('#response').html(marked.parse(data.response));
                         $('#result').show();
                         progressContainer.hide();
+                        processButton.prop('disabled', false);
                     } else if (data.status === 'error') {
                         eventSource.close();
                         alert(`An error occurred: ${data.message}`);
                         progressContainer.hide();
+                        processButton.prop('disabled', false);
                     }
                 };
             }

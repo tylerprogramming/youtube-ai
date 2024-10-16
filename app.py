@@ -11,6 +11,7 @@ from flask import Response
 import time
 import json
 import threading
+from utilities import get_youtube_video_id
 
 load_dotenv()
 
@@ -31,6 +32,7 @@ def init_db():
                      transcription TEXT NOT NULL,
                      response TEXT NOT NULL,
                      thumbnail_url TEXT,
+                     title TEXT,
                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     conn.close()
 
@@ -88,39 +90,51 @@ def home():
 
 @app.route('/results')
 def results():
-    print("Entering results route")  # Debug print
     conn = get_db_connection()
     responses = conn.execute('SELECT * FROM responses ORDER BY created_at DESC').fetchall()
+    
+    total_results = len(responses)
+    unique_results = len(set([r['title'] for r in responses]))
+    total_transcriptions = conn.execute('SELECT COUNT(*) FROM responses WHERE transcription IS NOT NULL').fetchone()[0]
+    latest_timestamp = responses[0]['created_at'].split()[0] if responses else 'N/A'
+    
     conn.close()
-    print(f"Number of responses: {len(responses)}")  # Debug print
-    return render_template('results.html', responses=responses)
+    
+    return render_template('results.html', 
+                           responses=responses, 
+                           total_results=total_results,
+                           unique_results=unique_results,
+                           total_transcriptions=total_transcriptions,
+                           latest_timestamp=latest_timestamp)
 
-@app.route('/debug_results')
-def debug_results():
-    return render_template('results.html', responses=[])
+# @app.route('/debug_results')
+# def debug_results():
+#     return render_template('results.html', responses=[])
 
 @app.route('/get_thumbnail', methods=['POST'])
 def get_thumbnail():
     youtube_url = request.json['youtube_url']
-    video_id = get_youtube_video_id(youtube_url)
-    if video_id:
-        thumbnail_url = f"https://img.youtube.com/vi/{video_id}/0.jpg"
-        return jsonify({'thumbnail_url': thumbnail_url})
-    else:
-        return jsonify({'error': 'Invalid YouTube URL'}), 400
-
-def get_youtube_video_id(url):
-    parsed_url = urlparse(url)
-    if parsed_url.hostname == 'youtu.be':
-        return parsed_url.path[1:]
-    if parsed_url.hostname in ('www.youtube.com', 'youtube.com'):
-        if 'v' in parse_qs(parsed_url.query):
-            return parse_qs(parsed_url.query)['v'][0]
-    return None
+    try:
+        ydl_opts = {'skip_download': True}
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(youtube_url, download=False)
+            return jsonify({
+                'thumbnail_url': info.get('thumbnail', ''),
+                'title': info.get('title', 'Untitled Video')
+            })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 def process_video(task_id, youtube_url, text_prompt):
     try:
         progress[task_id] = {'status': 'downloading', 'progress': 10}
+        
+        # Get video info
+        with yt_dlp.YoutubeDL({'skip_download': True}) as ydl:
+            info = ydl.extract_info(youtube_url, download=False)
+            video_title = info.get('title', 'Untitled Video')
+            thumbnail_url = info.get('thumbnail', '')
+        
         downloaded_file = download_youtube_audio(youtube_url)
         
         if downloaded_file:
@@ -135,10 +149,8 @@ def process_video(task_id, youtube_url, text_prompt):
             progress[task_id] = {'status': 'saving', 'progress': 90}
             # Save to database
             conn = get_db_connection()
-            video_id = get_youtube_video_id(youtube_url)
-            thumbnail_url = f"https://img.youtube.com/vi/{video_id}/0.jpg" if video_id else None
-            conn.execute('INSERT INTO responses (youtube_url, text_prompt, transcription, response, thumbnail_url) VALUES (?, ?, ?, ?, ?)',
-                         (youtube_url, text_prompt, transcription, response, thumbnail_url))
+            conn.execute('INSERT INTO responses (youtube_url, text_prompt, transcription, response, thumbnail_url, title) VALUES (?, ?, ?, ?, ?, ?)',
+                         (youtube_url, text_prompt, transcription, response, thumbnail_url, video_title))
             conn.commit()
             conn.close()
             
@@ -164,5 +176,8 @@ def process_with_progress():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5051)
+
+
+
 
 

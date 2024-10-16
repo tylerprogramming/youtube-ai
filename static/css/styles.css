@@ -1,0 +1,136 @@
+body {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.custom-container {
+    max-width: 800px;
+}
+@media (min-width: 768px) {
+    .custom-container {
+        max-width: 960px;
+    }
+}
+.jumbotron {
+    /* background-color: #ffffff; */
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    border-radius: .3rem;
+}
+.jumbotron .card {
+    transition: transform 0.3s ease-in-out;
+    height: 100%;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.jumbotron .card:hover {
+    transform: translateY(-5px);
+}
+.jumbotron .card-body {
+    padding: 1.5rem;
+}
+.jumbotron .card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.jumbotron .card-text {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+.jumbotron .fas {
+    margin-right: 0.5rem;
+}
+.jumbotron ul li {
+    margin-bottom: 0.5rem;
+}
+.feature-list {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+}
+.btn-primary {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+.btn-primary:hover {
+    background-color: #003d80;
+    border-color: #002752;
+}
+.main-content {
+    flex: 1 0 auto;
+}
+.footer {
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    margin-top: 50px;
+}
+
+#thumbnail-container {
+    text-align: center;
+}
+
+#video-thumbnail {
+    max-width: 25%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#video-title {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1em;
+    color: #333;
+    word-wrap: break-word;
+}
+
+.progress-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(#007bff 0deg, #e9ecef 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.progress-circle-inner {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#progress-percentage {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#processButton {
+    width: 100%;
+    max-width: 200px;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0c63e4;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(0,0,0,.125);
+}
+
+#transcription, #response {
+    max-height: 300px;
+    overflow-y: auto;
+}

@@ -1,0 +1,175 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.table {
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-dialog {
+    max-width: 80%;
+}
+
+#modalResponse {
+    white-space: normal;
+    font-family: Arial, sans-serif;
+}
+
+#modalResponse h1, #modalResponse h2, #modalResponse h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#modalResponse p {
+    margin-bottom: 10px;
+}
+
+#modalResponse ul, #modalResponse ol {
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+#modalResponse pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+#modalResponse code {
+    background-color: #f4f4f4;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.thumbnail-img {
+    width: 120px;
+    height: 67px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table th {
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+}
+
+.action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.btn-view {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-transcription {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-response {
+    background-color: #007bff;
+    color: white;
+}
+
+.metrics-container {
+    background-color: #17a2b8;
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+
+.metric-item {
+    text-align: center;
+    padding: 10px;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.metric-label {
+    font-size: 1.2rem;
+}
+
+.jumbotron {
+    background-color: #f8f9fa;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    border-radius: .3rem;
+}
+
+.jumbotron .card {
+    transition: transform 0.3s ease-in-out;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.jumbotron .card:hover {
+    transform: translateY(-5px);
+}
+
+.jumbotron .card-body {
+    padding: 1.5rem;
+}
+
+.jumbotron .card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: #007bff;
+}
+
+.jumbotron .card-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.jumbotron .fas {
+    margin-right: 0.5rem;
+}
+
+/* Add these styles to your existing CSS */
+
+.modal-body .card {
+    margin-bottom: 1rem;
+}
+
+.modal-body .card-header {
+    padding: 0.5rem 1rem;
+}
+
+.modal-body .card-body {
+    padding: 1rem;
+}
+
+#modalTranscription, #modalResponse {
+    font-size: 0.9rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+}
+
+.copy-btn {
+    font-size: 0.8rem;
+}

@@ -1,4 +1,7 @@
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class OpenAIAssistant:
     def __init__(self, context):

@@ -93,26 +93,28 @@ body {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: conic-gradient(#007bff 0deg, #e9ecef 0deg);
+    background-color: #e9ecef;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 .progress-circle-inner {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: white;
+    width: 0;
+    height: 100%;
+    background-color: #007bff;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
+    font-weight: bold;
+    transition: width 0.3s ease;
 }
 
 #progress-percentage {
-    font-size: 1.2rem;
-    font-weight: bold;
+    position: absolute;
 }
 
 #processButton {

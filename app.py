@@ -10,6 +10,7 @@ from utilities import (
     get_youtube_video_id, get_db_connection, init_db, generate_progress,
     download_youtube_audio, process_video
 )
+import yt_dlp
 
 load_dotenv()
 

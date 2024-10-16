@@ -96,7 +96,7 @@
                     <button id="processButton" type="submit" class="btn btn-primary mb-3" form="audioForm">Process</button>
                     <div id="progress-container" class="text-center" style="display: none;">
                         <div class="progress-circle">
-                            <div class="progress-circle-inner">
+                            <div class="progress-circle-inner progress-bar progress-bar-striped progress-bar-animated">
                                 <div id="progress-percentage">0%</div>
                             </div>
                         </div>
@@ -234,7 +234,7 @@
             function updateProgress(taskId) {
                 const eventSource = new EventSource(`/progress/${taskId}`);
                 const progressContainer = $('#progress-container');
-                const progressCircle = $('.progress-circle');
+                const progressCircle = $('.progress-circle-inner');
                 const progressPercentage = $('#progress-percentage');
                 const progressStatus = $('#progress-status');
                 const processButton = $('#processButton');
@@ -244,7 +244,7 @@
                 eventSource.onmessage = function(event) {
                     const data = JSON.parse(event.data);
                     const progress = data.progress;
-                    progressCircle.css('background', `conic-gradient(#007bff ${progress * 3.6}deg, #e9ecef 0deg)`);
+                    progressCircle.css('width', `${progress}%`);
                     progressPercentage.text(`${progress}%`);
                     progressStatus.text(data.status);
 
